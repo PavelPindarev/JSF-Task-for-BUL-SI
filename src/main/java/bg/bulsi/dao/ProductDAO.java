@@ -1,6 +1,5 @@
 package bg.bulsi.dao;
 
-
 import bg.bulsi.model.entity.ProductEntity;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;

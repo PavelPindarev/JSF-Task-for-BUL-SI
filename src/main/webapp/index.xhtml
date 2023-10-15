@@ -3,9 +3,113 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
-<f:view>
-    <h:outputLabel value="Hello, world"/>
-</f:view>
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:head>
+    <title>Menu Page</title>
+    <link rel="stylesheet" type="text/css" href="resources/css/styles.css"/>
+</h:head>
+
+<h:body>
+    <div class="navbar">
+        <div class="navbar-title">
+            <a href="#">#{menuBean.selectedMenu.restaurant}</a>
+        </div>
+        <div class="navbar-buttons">
+            <p:commandButton value="Login" oncomplete="PF('loginDialog').show()" icon="pi pi-sign-in"/>
+            <p:commandButton value="Register" oncomplete="PF('registerDialog').show()" icon="pi pi-user-plus"/>
+        </div>
+    </div>
+
+    <p:dialog header="Login" widgetVar="loginDialog" modal="true" width="300">
+        <h:form>
+            <p:inputText id="usernameLog" value="#{loginBean.username}" placeholder="Username" styleClass="input-style"
+                         required="true">
+                <f:validateLength minimum="4" maximum="20"/>
+            </p:inputText>
+            <p:password id="passwordLog" value="#{loginBean.password}" placeholder="Password" styleClass="input-style"
+                        required="true">
+                <f:validateLength minimum="5" maximum="20"/>
+            </p:password>
+
+            <p:commandButton value="Login" action="#{loginBean.login()}" process="@form"/>
+        </h:form>
+
+    </p:dialog>
+
+    <p:dialog id="register" header="Register" widgetVar="registerDialog" modal="true" width="300">
+        <h:form>
+            <p:outputLabel for="username" value="Username (between 4 and 20 characters):" />
+            <p:inputText id="username" value="#{registerBean.username}" placeholder="Username" styleClass="input-style"
+                         required="true">
+                <f:validateLength minimum="4" maximum="20"/>
+            </p:inputText>
+
+            <p:outputLabel for="password" value="Password (between 5 and 20 characters):" />
+            <p:password id="password" value="#{registerBean.password}" placeholder="Password" styleClass="input-style"
+                        required="true">
+                <f:validateLength minimum="5" maximum="20"/>
+            </p:password>
+
+            <p:outputLabel for="confirmPassword" value="Confirm Password (between 5 and 20 characters):" />
+            <p:password id="confirmPassword" value="#{registerBean.confirmPassword}" placeholder="Confirm Password"
+                        styleClass="input-style" required="true">
+                <f:validateLength minimum="5" maximum="20"/>
+            </p:password>
+
+            <p:outputLabel for="firstName" value="First Name (between 2 and 50 characters):" />
+            <p:inputText id="firstName" value="#{registerBean.firstName}" placeholder="First Name"
+                         styleClass="input-style" required="true">
+                <f:validateLength minimum="2" maximum="50"/>
+            </p:inputText>
+
+            <p:outputLabel for="lastName" value="Last Name (between 2 and 50 characters):" />
+            <p:inputText id="lastName" value="#{registerBean.lastName}" placeholder="Last Name" styleClass="input-style"
+                         required="true">
+                <f:validateLength minimum="2" maximum="50"/>
+            </p:inputText>
+            <p:calendar id="birthDate" value="#{registerBean.birthDate}" placeholder="Birth Date"
+                        styleClass="input-style" required="true" pattern="dd/MM/yyyy"/>
+
+            <p:commandButton value="Register" action="#{registerBean.register()}" process="@form"/>
+        </h:form>
+    </p:dialog>
+
+    <h1 class="centered-highlight">Menu of the Day</h1>
+    <p:outputLabel value="Current Date: #{menuBean.selectedMenu.date}" styleClass="centered-highlight">
+        <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" timeZone="GMT"/>
+    </p:outputLabel>
+
+    <div class="card crud-demo">
+        <h:form id="menuForm">
+            <h:dataTable id="menuTable" var="menu" value="#{menuBean.selectedMenu}">
+                <h:column>
+                    <p:dataTable id="dt-products" widgetVar="dtProducts"
+                                 paginator="true" rows="6" paginatorPosition="bottom"
+                                 reflow="true" styleClass="products-table"
+                                 var="product" value="#{menu.products}">
+                        <p:column headerText="Name">
+                            <h:outputText value="#{product.name}"/>
+                        </p:column>
+                        <p:column headerText="Description">
+                            <h:outputText value="#{product.description}"/>
+                        </p:column>
+                        <p:column headerText="Weight">
+                            <h:outputText value="#{product.weight}"/>
+                        </p:column>
+                        <p:column headerText="Price">
+                            <h:outputText value="#{product.price}"/>
+                        </p:column>
+                        <p:column headerText="Category">
+                            <h:outputText value="#{product.categoryType}"/>
+                        </p:column>
+                    </p:dataTable>
+                </h:column>
+            </h:dataTable>
+        </h:form>
+    </div>
+
+</h:body>
 </html>

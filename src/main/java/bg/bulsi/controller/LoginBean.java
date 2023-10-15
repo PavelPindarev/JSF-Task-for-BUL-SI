@@ -1,50 +1,39 @@
 package bg.bulsi.controller;
 
+import bg.bulsi.model.entity.UserEntity;
 import bg.bulsi.service.UserService;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import org.mindrot.jbcrypt.BCrypt;
 
-import java.time.LocalDate;
-
-@Named(value = "registerBean")
+@Named(value = "loginBean")
 @RequestScoped
 @Getter
 @Setter
-public class RegisterBean {
+public class LoginBean {
 
     private String username;
 
     private String password;
 
-    private String confirmPassword;
-
-    private String firstName;
-
-    private String lastName;
-
-    private LocalDate birthDate;
 
     @Inject
     private UserService userService;
 
-    public String register() {
-
-        if (!password.equals(confirmPassword)) {
+    public String login() {
+        if (!userService.usernameTaken(this.username)) {
+            return "index?faces-redirect=true";
+        }
+        UserEntity userEntity = userService.findUserByUsername(this.username);
+        boolean passwordMatch = BCrypt.checkpw(this.password, userEntity.getPassword());
+        if (!passwordMatch) {
 
             return "index?faces-redirect=true";
         }
-
-        if (userService.usernameTaken(this.username)) {
-            return "index?faces-redirect=true";
-        }
-
-        userService.registerUser(this);
-
         return "logged?faces-redirect=true";
     }
+
 }
-
-
-
